@@ -33,6 +33,7 @@ Trade perpetuals and swap tokens on GMX V2 across Arbitrum, Avalanche, and Botan
 - Oracle, OpenAPI, and GraphQL endpoint documentation
 - Contract addresses for all supported chains
 - Order type behavior and trigger logic
+- Automation framework: strategy loop, Base-wallet (GMX Account) funding, documented strategies, and risk management
 
 ### gmx-liquidity
 
