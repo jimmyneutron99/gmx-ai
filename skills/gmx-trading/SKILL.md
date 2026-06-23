@@ -496,6 +496,59 @@ await sdk.orders.createDecreaseOrder({
 console.log("Close order submitted — keeper will execute in 1-30s");
 ```
 
+## Automated Trading
+
+The SDK methods above can be driven on a schedule to run **systematic, rules-based strategies**
+unattended — including capital funded from a **Base wallet** via GMX Account (multichain).
+
+> **No strategy guarantees profit.** Leveraged perpetuals can be fully liquidated and lose your
+> entire margin. The strategies documented here are standard, *commonly-used* approaches — they
+> are hypotheses to backtest, not guarantees of returns. What makes automation survivable is the
+> **risk-management layer** (position sizing, server-side stop-losses, a drawdown kill-switch),
+> not the entry signal. Backtest and paper-trade before risking real funds, and only deploy
+> capital you can afford to lose.
+
+**The loop:** every strategy is `data → signal → risk checks → execute → repeat`. Re-fetch market
+data each tick, gate every intent through risk controls, and attach stop-loss/take-profit as
+**sidecar orders** so they survive a bot crash.
+
+```typescript
+// Minimal risk-managed tick. Re-derive actions from on-chain state every loop (idempotent).
+async function tick(sdk, cfg, state) {
+  const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
+  const positions = await sdk.positions.getPositionsInfo({
+    marketsInfoData, tokensData, showPnlInLeverage: false,
+  });
+
+  const intent = cfg.strategy(await fetchCandles(cfg), positions); // "long" | "short" | "flat"
+  const risk = applyRiskControls(intent, positions, cfg, state);   // may halt/downgrade
+  if (!risk.allowed) return;
+
+  // Size so hitting the stop costs a fixed small % of equity; cap leverage well under 100x.
+  await sdk.orders[risk.intent]({
+    marketAddress: cfg.marketAddress,
+    payTokenAddress: cfg.payTokenAddress,
+    collateralTokenAddress: cfg.collateralTokenAddress,
+    payAmount: risk.payAmount,
+    leverage: cfg.leverageBps,          // e.g. 20000n–50000n (2x–5x), not 1000000n (100x)
+    allowedSlippageBps: 100,
+    skipSimulation: true,
+    // Attach server-side stop-loss + take-profit so they exist even if the bot goes offline:
+    createSltpEntries: cfg.sltpEntries, // see references/order-types.md → Sidecar orders
+  });
+}
+
+setInterval(() => tick(sdk, cfg, state).catch(console.error), cfg.intervalMs);
+```
+
+**Base wallet note:** GMX perp markets settle on Arbitrum/Avalanche/Botanix, not Base directly.
+To trade from Base, deposit from your Base wallet into **GMX Account** (multichain) — funds bridge
+via LayerZero into the `MultichainVault` and orders route through `MultichainOrderRouter`, with
+your Base account as signer. Programmatic bridging is not yet in the SDK; the practical path is to
+pre-fund from Base once via the GMX app, then automate on Arbitrum. See
+[Automation & Strategies](references/automation.md) for the full framework, documented strategies,
+and the risk-management layer.
+
 ## Limitations
 
 - **GM pool deposits/withdrawals:** See the [gmx-liquidity](../gmx-liquidity/SKILL.md) skill for contract-level operations. SDK convenience methods not yet available.
@@ -511,6 +564,7 @@ console.log("Close order submitted — keeper will execute in 1-30s");
 - [API Endpoints](references/api-endpoints.md) — Oracle, OpenAPI, and GraphQL endpoint details
 - [Contract Addresses](references/contract-addresses.md) — Deployed contracts per chain
 - [Order Types](references/order-types.md) — Detailed order type behavior and trigger logic
+- [Automation & Strategies](references/automation.md) — Strategy loop, Base-wallet (GMX Account) automation, documented strategies, and risk management
 - [GMX Documentation](https://docs.gmx.io) — Official protocol documentation
 - [GMX App](https://app.gmx.io) — Trading interface
 - [`@gmx-io/sdk` on npm](https://www.npmjs.com/package/@gmx-io/sdk) — SDK package

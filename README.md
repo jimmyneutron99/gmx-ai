@@ -33,6 +33,7 @@ Trade perpetuals and swap tokens on GMX V2 across Arbitrum, Avalanche, and Botan
 - Oracle, OpenAPI, and GraphQL endpoint documentation
 - Contract addresses for all supported chains
 - Order type behavior and trigger logic
+- Automation framework: strategy loop, Base-wallet (GMX Account) funding, documented strategies, and risk management
 
 ### gmx-liquidity
 
@@ -51,6 +52,19 @@ Provide liquidity on GMX V2 across Arbitrum, Avalanche, and Botanix.
 - Gas estimation formulas per operation type
 - GLV vault addresses and constituent pool details
 - Shares SDK, API, and contract address references with gmx-trading
+
+## Tools
+
+Read-only CLI analytics in [`tools/`](tools/) that surface GMX's cost and risk mechanics so you
+trade cost-efficiently — funding/borrowing carry, price-impact side, all-in trade cost, and
+liquidation/stop-loss math. They report costs, not price predictions, and do not guarantee
+profit. See [`tools/README.md`](tools/README.md).
+
+**[`tools/auto-trader/`](tools/auto-trader/)** — a balance-aware, risk-managed automation that runs
+the three-sleeve strategy (LP fee capture + delta-neutral funding + leveraged directional) on a
+schedule, sizing off whatever your wallet holds. **Paper-mode by default**; it bounds risk with
+stop-losses, a daily-loss limit, and a drawdown kill-switch, but does **not** guarantee profit.
+See [`tools/auto-trader/README.md`](tools/auto-trader/README.md).
 
 ## Links
 

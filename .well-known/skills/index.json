@@ -9,7 +9,8 @@
         "gmx-trading/references/sdk-reference.md",
         "gmx-trading/references/api-endpoints.md",
         "gmx-trading/references/contract-addresses.md",
-        "gmx-trading/references/order-types.md"
+        "gmx-trading/references/order-types.md",
+        "gmx-trading/references/automation.md"
       ],
       "metadata": {
         "author": "gmx-io",
