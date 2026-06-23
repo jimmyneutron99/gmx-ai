@@ -250,6 +250,27 @@ funding fields continuously.
 
 ---
 
+## Companion analytics tools
+
+The repo ships read-only CLI tools in [`tools/`](../../../tools/) that surface the cost and risk
+mechanics these strategies trade against — use them to trade cost-efficiently and avoid
+liquidation (they report costs, not price predictions):
+
+| Tool | Answers |
+|------|---------|
+| `funding-borrow-scanner.js` | Which market/side pays you to hold (net carry)? Basis for funding capture. |
+| `price-impact-side.js` | Which side is cheap to trade now (balances open interest)? |
+| `trade-cost-estimator.js` | All-in cost of a trade and the breakeven move it needs. |
+| `liquidation-guard.js` | Liquidation price + a stop-loss that exits before the protocol does. |
+
+> **On "collecting liquidation fees":** GMX V2 liquidations are run by a permissioned keeper
+> network with signed oracle prices — there is no public `liquidate()` bounty to capture. The
+> proceeds of liquidations go to **GM pool LPs**, not to whoever triggers them. To earn from
+> traders' fees and liquidations, provide liquidity (see the `gmx-liquidity` skill), not by
+> running a keeper.
+
+---
+
 ## Before going live
 
 1. **Backtest** the signal on historical candles (`/prices/candles`, see

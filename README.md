@@ -53,6 +53,13 @@ Provide liquidity on GMX V2 across Arbitrum, Avalanche, and Botanix.
 - GLV vault addresses and constituent pool details
 - Shares SDK, API, and contract address references with gmx-trading
 
+## Tools
+
+Read-only CLI analytics in [`tools/`](tools/) that surface GMX's cost and risk mechanics so you
+trade cost-efficiently — funding/borrowing carry, price-impact side, all-in trade cost, and
+liquidation/stop-loss math. They report costs, not price predictions, and do not guarantee
+profit. See [`tools/README.md`](tools/README.md).
+
 ## Links
 
 - [GMX Documentation](https://docs.gmx.io)
