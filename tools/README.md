@@ -47,6 +47,7 @@ inspect, but never signs anything.)
 | `price-impact-side.js` | For a market, which side is *cheap* to trade right now (balances OI)? |
 | `trade-cost-estimator.js` | What's the all-in cost of a trade, and the breakeven move it needs? |
 | `liquidation-guard.js` | Where's my liquidation price, and where should the stop-loss sit? |
+| [`auto-trader/`](auto-trader/) | Full scheduled automation that runs the three-sleeve strategy with risk controls (paper-mode by default). |
 
 ### funding-borrow-scanner.js
 ```bash

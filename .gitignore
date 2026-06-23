@@ -3,3 +3,6 @@ node_modules/
 *.log
 .env
 .env.*
+
+# auto-trader runtime state (may reveal account activity)
+tools/auto-trader/.state.json

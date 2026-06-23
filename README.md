@@ -60,6 +60,12 @@ trade cost-efficiently — funding/borrowing carry, price-impact side, all-in tr
 liquidation/stop-loss math. They report costs, not price predictions, and do not guarantee
 profit. See [`tools/README.md`](tools/README.md).
 
+**[`tools/auto-trader/`](tools/auto-trader/)** — a balance-aware, risk-managed automation that runs
+the three-sleeve strategy (LP fee capture + delta-neutral funding + leveraged directional) on a
+schedule, sizing off whatever your wallet holds. **Paper-mode by default**; it bounds risk with
+stop-losses, a daily-loss limit, and a drawdown kill-switch, but does **not** guarantee profit.
+See [`tools/auto-trader/README.md`](tools/auto-trader/README.md).
+
 ## Links
 
 - [GMX Documentation](https://docs.gmx.io)
